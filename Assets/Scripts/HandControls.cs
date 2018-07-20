@@ -42,9 +42,4 @@ public class HandControls : MonoBehaviour {
 		transform.position = Vector3.Lerp(transform.position, targetPosition, testLerp);
 	}
 
-	void OnCollisionEnter(Collision collision)
-	{
-		Debug.Log(collision.gameObject.tag);
-	}
-
 }
