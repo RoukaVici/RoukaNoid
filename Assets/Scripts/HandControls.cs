@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HandControls : MonoBehaviour {
+public class HandControls : MonoBehaviour
+{
 
 	[SerializeField] float speed = 1f;
 	[SerializeField] private Vector3 positiveOffsetLimit, negativeOffsetLimit;
@@ -13,7 +14,7 @@ public class HandControls : MonoBehaviour {
 	private Animator anim;
 	private Vector3 originalPosition;
 	private Vector3 targetPosition;
-	private bool isGrabbing = false;
+	private bool isGrabbing = false, wasKinematic = false;
 	private GameObject grabbedObject;
 	private Transform grabbedObjectParent;
 
@@ -56,31 +57,51 @@ public class HandControls : MonoBehaviour {
 			isGrabbing = false;
 			if (grabbedObject)
 			{
-				grabbedObject.GetComponent<Rigidbody>().isKinematic = false;
-				grabbedObject.transform.SetParent(grabbedObjectParent);
+				Rigidbody otherRB = grabbedObject.GetComponent<Rigidbody>();
+				if (otherRB)
+				{
+					otherRB.isKinematic = wasKinematic;
+				}
+				if (grabbedObject.transform.parent == transform)
+					grabbedObject.transform.SetParent(grabbedObjectParent);
 				grabbedObject = null;
 			}
 		}
 	}
-
-	void GrabObject()
-	{
-
-	}
 	
 	void FixedUpdate ()
 	{
+		if (Cursor.lockState != CursorLockMode.Locked)
+			return ;
 		MoveHands();
 		AnimateHand();
-		GrabObject();
 	}
 
 	void OnCollisionEnter(Collision other)
 	{
-		if (!isGrabbing && other.gameObject.tag == "Grabable"
+		if (!isGrabbing && (other.gameObject.tag == "Grabable" || other.gameObject.tag == "Paddle")
 		&& anim.GetCurrentAnimatorStateInfo(0).IsName("Grab") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
 		{
-			other.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+			Rigidbody otherRB = other.gameObject.GetComponent<Rigidbody>();
+			if (otherRB)
+			{
+				wasKinematic = false;
+				otherRB.isKinematic = true;
+			}
+			grabbedObjectParent = other.transform.parent;
+			grabbedObject = other.gameObject;
+			other.transform.SetParent(transform);
+			isGrabbing = true;
+		}
+
+	}
+
+	void OnTriggerEnter(Collider other)
+	{
+		if (!isGrabbing && (other.gameObject.tag == "Grabable" || other.gameObject.tag == "Paddle")
+		&& anim.GetCurrentAnimatorStateInfo(0).IsName("Grab") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
+		{
+			wasKinematic = true;
 			grabbedObjectParent = other.transform.parent;
 			grabbedObject = other.gameObject;
 			other.transform.SetParent(transform);

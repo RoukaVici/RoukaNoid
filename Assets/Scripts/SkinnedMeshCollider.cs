@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshCollider))]
-public class SkinnedMeshCollider : MonoBehaviour {
+public class SkinnedMeshCollider : MonoBehaviour
+{
 	[SerializeField]
    	private SkinnedMeshRenderer meshRenderer;
     private MeshCollider mCollider;
