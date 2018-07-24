@@ -9,7 +9,7 @@ public class Ball : MonoBehaviour
 	[SerializeField] private float initialVelocity = 10f;
 	private Rigidbody rb;
 	private bool ballInPlay;
-	private Vector3 velocity, initialPos;
+	private Vector3 velocity, initialPos, initialScale;
 	private Transform initialParent;
 	private Collider col;
 	void Start ()
@@ -18,6 +18,7 @@ public class Ball : MonoBehaviour
 		velocity = new Vector3(0, initialVelocity, 0);
 		initialPos = transform.localPosition;
 		initialParent = transform.parent;
+		initialScale = transform.localScale;
 		col = GetComponent<Collider>();
 	}
 	
@@ -31,15 +32,17 @@ public class Ball : MonoBehaviour
             rb.isKinematic = false;
             rb.AddForce(velocity);
 		}
-		rb.angularVelocity = Vector3.zero;
+		if (rb.velocity.y >= - 0.5 && rb.velocity.y <= 0.5f)
+			rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y * 1.5f, rb.velocity.z);
 	}
 
 	void OnTriggerEnter(Collider other)
 	{
 		if (other.gameObject.tag == "Paddle" && rb.useGravity == true)
 		{
-			transform.SetParent(other.transform);
+			transform.SetParent(initialParent);
 			transform.localPosition = initialPos;
+			transform.localScale = initialScale;
 			rb.useGravity = false;
 			rb.drag = 0;
 			ballInPlay = false;
@@ -62,7 +65,7 @@ public class Ball : MonoBehaviour
 			float percent = (((rightBound - other.contacts[0].point.x) / (rightBound - leftBound)) - 0.5f) * -2;
 			rb.velocity = Vector3.zero;
 			float speedPercent = percent * initialVelocity;
-			rb.AddForce(speedPercent, initialVelocity + speedPercent * 2, 0);
+			rb.AddForce(speedPercent, initialVelocity, 0);
 		}
 		else if (other.gameObject.tag == "Ground")
 		{
@@ -76,6 +79,7 @@ public class Ball : MonoBehaviour
 	{
 		transform.SetParent(initialParent);
 		transform.localPosition = initialPos;
+		transform.localScale = initialScale;
 		rb.useGravity = false;
 		rb.isKinematic = true;
 		rb.drag = 0;

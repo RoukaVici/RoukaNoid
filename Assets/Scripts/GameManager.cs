@@ -15,9 +15,13 @@ public class GameManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		if (Input.GetAxis("Cancel") > 0)
+		if (Input.GetAxis("Cancel") > 0 && Cursor.lockState == mode)
 		{
 			Cursor.lockState = CursorLockMode.None;
+		}
+		else if (Input.GetAxis("Cancel") > 0 && Cursor.lockState == CursorLockMode.None)
+		{
+			Cursor.lockState = mode;
 		}
 	}
 
