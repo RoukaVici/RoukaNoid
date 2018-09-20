@@ -1956,7 +1956,7 @@ GameObject:
   - component: {fileID: 114807741129335674}
   - component: {fileID: 114664999820202634}
   m_Layer: 5
-  m_Name: UI
+  m_Name: RoukaVici UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8049,17 +8049,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1296db91cb154ba0890aba579986546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedItemColor:
-    r: 0
-    g: 0.39607844
-    b: 0.84705883
-    a: 1
+  selectedItemColor: {r: 0, g: 0.39607844, b: 0.84705883, a: 1}
   PatternList: {fileID: 1045221490965586}
   PatternEditorMenu: {fileID: 1029169506107214}
   patternEditorData: {fileID: 114011062511578698}
+  patternNbLimit: 20
   slotPrefab: {fileID: 1899509738104052, guid: 42a963000c6e8475d9a36f107275d9c6, type: 2}
   scrollViewContent: {fileID: 224119841232393864}
-  sr: {fileID: 114449334687240716}
 --- !u!114 &114807767596478160
 MonoBehaviour:
   m_ObjectHideFlags: 1
